@@ -114,6 +114,7 @@ function render(){
 }
 
 canvas.addEventListener("mousemove", movePaddle);
+canvas.addEventListener("touchmove", movePaddle);
 
 function movePaddle(evt){
     let rect = canvas.getBoundingClientRect();
