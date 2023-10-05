@@ -3,10 +3,14 @@ const colorPayer1 = 'blue';
 const colorPayer2 = 'red';
 /* VALUES */
 const netInterval = 5;
-const ballRadius = 9;
 const netWidth = 2;
+const ballRadius = 9;
+const ballSpeed = 7;
+const paddleHeight = 100;
+const paddleWidth = 10;
 const framePerSecond = 50;
 const computerLevel = 0.1;
+const ballColor = "yellowgreen"
 
 
 /* SELECT CANVAS */
@@ -17,9 +21,9 @@ const context = canvas.getContext("2d");
 
 const user = {
     x: 0,
-    y: canvas.clientHeight/2 - 100/2,
-    width: 10,
-    height: 100,
+    y: canvas.height/2 - paddleHeight/2,
+    width: paddleWidth,
+    height: paddleHeight,
     color: colorPayer1,
     score: 0
 }
@@ -27,10 +31,10 @@ const user = {
 /* COMPUTER PADDLE */
 
 const com = {
-    x: canvas.width - 10,
-    y: canvas.clientHeight/2 - 100/2,
-    width: 10,
-    height: 100,
+    x: canvas.width - paddleWidth,
+    y: canvas.height/2 - paddleHeight/2,
+    width: paddleWidth,
+    height: paddleHeight,
     color: colorPayer2,
     score: 0
 }
@@ -39,10 +43,10 @@ const com = {
 
 const ball = {
     x: canvas.width/2,
-    y: canvas.clientHeight/2,
+    y: canvas.height/2,
     radius: ballRadius,
-    speed: 5,
-    color: "white",
+    speed: ballSpeed,
+    color: ballColor,
     velocityX: 5,
     velocityY: 5
 }
@@ -86,7 +90,7 @@ function drawCircle(x, y, r, color){
 
 function drawText(text, x, y, color){
     context.fillStyle = color;
-    context.font = "45px fantasy";
+    context.font = "45px Courier New";
     context.fillText(text, x, y);
 }
 //drawText("something", 300, 200, "white");
@@ -95,7 +99,7 @@ function drawText(text, x, y, color){
 /* RENDER THE GAME */
 function render(){
     //clear canvas
-    drawRect(0, 0, canvas.clientWidth, canvas.clientHeight, "green");
+    drawRect(0, 0, canvas.width, canvas.height, "green");
 
     drawNet();
     //draw score
@@ -117,6 +121,17 @@ function movePaddle(evt){
     user.y = evt.clientY - rect.top - user.height/2;
 }
 
+/* BALL RESET */
+function resetBall(){
+    ball.x = canvas.width/2;
+    ball.y = canvas.height/2;
+
+    ball.velocityX = -ball.velocityX; 
+    ball.speed = ballSpeed;
+    //ball.velocityY = -ball.velocityY;
+    
+}
+
 function collision(ball, paddle){
     ball.top = ball.y - ball.radius;
     ball.bottom = ball.y + ball.radius;
@@ -133,16 +148,6 @@ function collision(ball, paddle){
         && ball.left < paddle.right
         && ball.top < paddle.bottom;
 }
-/* BALL RESET */
-function resetBall(){
-    /* ball.x = canvas.width/2;
-    ball.y = canvas.height/2;
-
-    ball.speed = 5;
-    ball.velocityY = -ball.velocityY; */
-    //ball.velocityX = -ball.velocityX;
-    
-}
 
 /* UPDATE GAME  */
 function gameUpdate(){
@@ -156,31 +161,34 @@ function gameUpdate(){
         ball.velocityY = -ball.velocityY;
     }
 
-    let player = (ball.x < canvas.width/2) ? user : com;
+    let player = (ball.x + ball.radius < canvas.width/2) ? user : com;
 
     if (collision( ball, player)){
         //where the ball hit the player
-        let collidePoint = ball.y - (player.y + player.height/2);
+        let collidePoint = (ball.y - (player.y + player.height/2));
         //normalization
         collidePoint = collidePoint/(player.height/2);
 
         //calculate angle in Radian
-        let angleRad = collidePoint * Math.PI/4;
+        let angleRad = collidePoint * (Math.PI/4);
 
         // X direction of the ball when it's hit
-        let direction = (ball.x < canvas.width/2) ? 1 : -1;
+        let direction = ((ball.x + ball.radius) < canvas.width/2) ? 1 : -1;
 
         //change velocity X an y
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
-        ball.velocityY = direction *ball.speed * Math.sin(angleRad);
+        ball.velocityY = ball.speed * Math.sin(angleRad);
 
         ball.speed += 0.1;
     }
 
-    if(ball.x - ball.radius < 0) com.score++;
-    if(ball.x - ball.radius > canvas.width) com.score++;
-
-    resetBall();
+    if(ball.x - ball.radius < 0){
+        com.score++;
+        resetBall();
+    }
+    else if(ball.x + ball.radius > canvas.width){ 
+        user.score++;
+        resetBall();}
 
 }
 function game(){
