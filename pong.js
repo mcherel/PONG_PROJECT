@@ -1,21 +1,33 @@
 /* COLORS */
 const colorPayer1 = 'blue';
 const colorPayer2 = 'red';
+const fontStyle = "45px Courier New";
+const backgroundColor = "green";
 /* VALUES */
+const startMessage = "Press any key to begin";
 const netInterval = 5;
 const netWidth = 2;
+
 const ballRadius = 9;
 const ballSpeed = 7;
+const ballSpeedPace = 0.2;
+const ballColor = "yellowgreen"
+
 const paddleHeight = 100;
 const paddleWidth = 10;
+
 const framePerSecond = 50;
 const computerLevel = 0.1;
-const ballColor = "yellowgreen"
 
 
 /* SELECT CANVAS */
 const canvas = document.getElementById("pong");
 const context = canvas.getContext("2d");
+
+/* GAME */
+const game = {
+    running: false
+}
 
 /* USER PADDLE */
 
@@ -90,7 +102,7 @@ function drawCircle(x, y, r, color){
 
 function drawText(text, x, y, color){
     context.fillStyle = color;
-    context.font = "45px Courier New";
+    context.font = fontStyle;
     context.fillText(text, x, y);
 }
 //drawText("something", 300, 200, "white");
@@ -99,7 +111,7 @@ function drawText(text, x, y, color){
 /* RENDER THE GAME */
 function render(){
     //clear canvas
-    drawRect(0, 0, canvas.width, canvas.height, "green");
+    drawRect(0, 0, canvas.width, canvas.height, backgroundColor);
 
     drawNet();
     //draw score
@@ -114,8 +126,12 @@ function render(){
 }
 
 canvas.addEventListener("mousemove", movePaddle);
-canvas.addEventListener("touchmove", movePaddle);
+//canvas.addEventListener("touchmove", movePaddle);//for the phone ...
+canvas.addEventListener("keydown", setInterval);
 
+function sayHello(){
+    console.log("Hello");
+}
 function movePaddle(evt){
     let rect = canvas.getBoundingClientRect();
 
@@ -158,29 +174,31 @@ function gameUpdate(){
     ///AI
     com.y += (ball.y - (com.y + com.height/2)) * computerLevel;
 
-    if(ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0){
-        ball.velocityY = -ball.velocityY;
-    }
-
+    
     let player = (ball.x + ball.radius < canvas.width/2) ? user : com;
-
+    
     if (collision( ball, player)){
         //where the ball hit the player
         let collidePoint = (ball.y - (player.y + player.height/2));
         //normalization
         collidePoint = collidePoint/(player.height/2);
-
+        
         //calculate angle in Radian
         let angleRad = collidePoint * (Math.PI/4);
-
+        
         // X direction of the ball when it's hit
         let direction = ((ball.x + ball.radius) < canvas.width/2) ? 1 : -1;
-
+        
         //change velocity X an y
         ball.velocityX = direction * ball.speed * Math.cos(angleRad);
         ball.velocityY = ball.speed * Math.sin(angleRad);
-
-        ball.speed += 0.1;
+        
+        ball.speed += ballSpeedPace;
+    }
+    
+    //changing direction
+    if(ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0){
+        ball.velocityY = -ball.velocityY;
     }
 
     if(ball.x - ball.radius < 0){
@@ -192,10 +210,43 @@ function gameUpdate(){
         resetBall();}
 
 }
-function game(){
-    gameUpdate();
+function listen(){
+    if (game.running === false){
+        start();
+    }
+    else{
+        gameUpdate();
+    }
     render();
 }
 
+function start (){
+    render();
+    context.font = fontStyle;
+    context.fillStyle = backgroundColor;
+    context.fillRect(
+        canvas.width/2 - 300,
+        canvas.height/2 - 50,
+        700,
+        100
+    );
+    // Change the canvas color;
+    context.fillStyle = "white";
+ 
+    // Draw the 'press any key to begin' text
+    context.fillText(startMessage,
+    3,
+    canvas.height / 2 + 15
+    );
+
+    document.addEventListener("keydown", function(key){
+        if (game.running === false){
+            game.running = true;
+            console.log(game.running);
+        }
+        setInterval(listen, 1000/framePerSecond);
+    });
+}
+
+start();
 /* LOOP */
-setInterval(game, 1000/framePerSecond);
