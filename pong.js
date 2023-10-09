@@ -20,6 +20,8 @@ const paddleWidth = 10;
 const framePerSecond = 50;
 const computerLevel = 0.1;
 
+const roundsMax = 10;
+
 
 /* SELECT CANVAS */
 const canvas = document.getElementById("pong");
@@ -198,17 +200,19 @@ function gameUpdate(){
     }
     
     //changing direction
-    if(ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0){
+    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0){
         ball.velocityY = -ball.velocityY;
     }
 
-    if(ball.x - ball.radius < 0){
+    if (ball.x - ball.radius < 0){
         com.score++;
         resetBall();
     }
     else if(ball.x + ball.radius > canvas.width){ 
         user.score++;
         resetBall();}
+    if (com.score === roundsMax || user.score === roundsMax)
+        game.running = false;
 
 }
 function listen(){
@@ -244,10 +248,11 @@ function start (){
         if (game.running === false){
             game.running = true;
             console.log(game.running);
+            /* LOOP */
             setInterval(listen, 1000/framePerSecond);
         }
     });
 }
 
 start();
-/* LOOP */
+
