@@ -3,6 +3,8 @@ const colorPayer1 = 'blue';
 const colorPayer2 = 'red';
 const fontStyle = "45px Courier New";
 const backgroundColor = "green";
+const ballColor = "yellowgreen"
+const defaultColor = "white";
 /* VALUES */
 const startMessage = "Press any key to begin";
 const netInterval = 5;
@@ -11,7 +13,6 @@ const netWidth = 2;
 const ballRadius = 9;
 const ballSpeed = 7;
 const ballSpeedPace = 0.2;
-const ballColor = "yellowgreen"
 
 const paddleHeight = 100;
 const paddleWidth = 10;
@@ -77,7 +78,7 @@ const net = {
     y: 0,
     width: netWidth,
     height: netInterval,
-    color: "white"
+    color: defaultColor
 }
 
 /* DRAW NET */
@@ -96,7 +97,7 @@ function drawCircle(x, y, r, color){
     context.fill();
 }
 
-//drawCircle(100, 100, 50, "white");
+//drawCircle(100, 100, 50, defaultColor);
 
 /* DRAW TEXT */
 
@@ -105,7 +106,7 @@ function drawText(text, x, y, color){
     context.font = fontStyle;
     context.fillText(text, x, y);
 }
-//drawText("something", 300, 200, "white");
+//drawText("something", 300, 200, defaultColor);
 
 
 /* RENDER THE GAME */
@@ -129,9 +130,9 @@ canvas.addEventListener("mousemove", movePaddle);
 //canvas.addEventListener("touchmove", movePaddle);//for the phone ...
 canvas.addEventListener("keydown", setInterval);
 
-function sayHello(){
+/* function sayHello(){
     console.log("Hello");
-}
+} */
 function movePaddle(evt){
     let rect = canvas.getBoundingClientRect();
 
@@ -231,7 +232,7 @@ function start (){
         100
     );
     // Change the canvas color;
-    context.fillStyle = "white";
+    context.fillStyle = defaultColor;
  
     // Draw the 'press any key to begin' text
     context.fillText(startMessage,
@@ -239,12 +240,12 @@ function start (){
     canvas.height / 2 + 15
     );
 
-    document.addEventListener("keydown", function(key){
+    document.addEventListener("keydown", function(){
         if (game.running === false){
             game.running = true;
             console.log(game.running);
+            setInterval(listen, 1000/framePerSecond);
         }
-        setInterval(listen, 1000/framePerSecond);
     });
 }
 
