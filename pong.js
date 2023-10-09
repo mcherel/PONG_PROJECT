@@ -20,7 +20,7 @@ const paddleWidth = 10;
 const framePerSecond = 50;
 const computerLevel = 0.1;
 
-const roundsMax = 10;
+const roundsMax = 2;
 
 
 /* SELECT CANVAS */
@@ -214,15 +214,17 @@ function gameUpdate(){
     if (com.score === roundsMax || user.score === roundsMax)
         game.running = false;
 
+    console.log(game.running);
+
 }
 function listen(){
+    render();
     if (game.running === false){
         start();
     }
     else{
         gameUpdate();
     }
-    render();
 }
 
 function start (){
@@ -237,15 +239,23 @@ function start (){
     );
     // Change the canvas color;
     context.fillStyle = defaultColor;
+
+    let message;
+
+    if (com.score === roundsMax || user.score === roundsMax)
+        com.score === roundsMax ? message = "GAME OVER" : message = "YOU WIN";
+    else
+        message = startMessage;
  
     // Draw the 'press any key to begin' text
-    context.fillText(startMessage,
-    3,
+    context.textAlign = "center";
+    context.fillText(message,
+    canvas.width/2,
     canvas.height / 2 + 15
     );
 
     document.addEventListener("keydown", function(){
-        if (game.running === false){
+        if (game.running === false && user.score === 0 && com.score === 0){
             game.running = true;
             console.log(game.running);
             /* LOOP */
@@ -255,4 +265,3 @@ function start (){
 }
 
 start();
-
