@@ -211,8 +211,10 @@ function gameUpdate(){
     else if(ball.x + ball.radius > canvas.width){ 
         user.score++;
         resetBall();}
-    if (com.score === roundsMax || user.score === roundsMax)
+    if (com.score === roundsMax || user.score === roundsMax){
         game.running = false;
+        user.color = com.color = backgroundColor;//paddles become transparents in the end of game
+    }
 
     console.log(game.running);
 
