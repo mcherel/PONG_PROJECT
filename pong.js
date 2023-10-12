@@ -1,6 +1,6 @@
 /* COLORS */
-const colorPayer1 = 'blue';
-const colorPayer2 = 'red';
+const colorPlayer1 = 'blue';
+const colorPlayer2 = 'red';
 const fontStyle = "45px Courier New";
 const backgroundColor = "green";
 const ballColor = "yellowgreen"
@@ -39,7 +39,7 @@ const user = {
     y: canvas.height/2 - paddleHeight/2,
     width: paddleWidth,
     height: paddleHeight,
-    color: colorPayer1,
+    color: colorPlayer1,
     score: 0
 }
 
@@ -50,7 +50,7 @@ const com = {
     y: canvas.height/2 - paddleHeight/2,
     width: paddleWidth,
     height: paddleHeight,
-    color: colorPayer2,
+    color: colorPlayer2,
     score: 0
 }
 
@@ -99,8 +99,6 @@ function drawCircle(x, y, r, color){
     context.fill();
 }
 
-//drawCircle(100, 100, 50, defaultColor);
-
 /* DRAW TEXT */
 
 function drawText(text, x, y, color){
@@ -108,7 +106,6 @@ function drawText(text, x, y, color){
     context.font = fontStyle;
     context.fillText(text, x, y);
 }
-//drawText("something", 300, 200, defaultColor);
 
 
 /* RENDER THE GAME */
@@ -118,8 +115,8 @@ function render(){
 
     drawNet();
     //draw score
-    drawText(user.score, canvas.width/4, canvas.height/5, colorPayer1);
-    drawText(com.score, (3 * canvas.width/4), canvas.height/5, colorPayer2);
+    drawText(user.score, canvas.width/4, canvas.height/5, colorPlayer1);
+    drawText(com.score, (3 * canvas.width/4), canvas.height/5, colorPlayer2);
     //draw paddles
     drawRect(user.x, user.y, user.width, user.height, user.color);
     drawRect(com.x, com.y, com.width, com.height, com.color);
@@ -129,12 +126,8 @@ function render(){
 }
 
 canvas.addEventListener("mousemove", movePaddle);
-//canvas.addEventListener("touchmove", movePaddle);//for the phone ...
 canvas.addEventListener("keydown", setInterval);
 
-/* function sayHello(){
-    console.log("Hello");
-} */
 function movePaddle(evt){
     let rect = canvas.getBoundingClientRect();
 
@@ -158,10 +151,10 @@ function collision(ball, paddle){
     ball.left = ball.x - ball.radius;
     ball.right = ball.x + ball.radius;
 
-    paddle.top = paddle.y;
-    paddle.bottom = paddle.y + paddle.height;
-    paddle.left = paddle.x;
-    paddle.right = paddle.x + paddle.width;
+    paddle.top = paddle.y + 1;
+    paddle.bottom = paddle.y + paddle.height + 1;
+    paddle.left = paddle.x + 1;
+    paddle.right = paddle.x + paddle.width + 1;
     //returns true or fance for the collision
     return ball.right > paddle.left
         && ball.bottom > paddle.top
